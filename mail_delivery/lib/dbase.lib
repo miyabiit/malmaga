@@ -1,0 +1,29 @@
+<?php
+
+function maxAdminID() {
+
+	$ret = 0;
+	return $ret;
+}
+
+
+function maxUserID($con) {
+
+	$ret = 0;
+
+	$sql = "select max(user_id) from m_base";
+	$result = pg_query($con, $sql);
+	if (!$result) {
+		die("Error in SQL query : " . pg_last_error());
+	}
+	if (pg_numrows($result) > 0) {
+    		if ($row = pg_fetch_array($result)) {
+			$ret = $row['max'];
+		}
+	}
+	pg_free_result($result);
+
+	return $ret;
+}
+
+?>

@@ -1,0 +1,19 @@
+<?
+// 以下2つのパラメータは本番環境では共に0を設定すること
+$is_test = 1;			//テストデータベースで稼働させる場合は1 本番で動かす場合は0
+$is_debugmode = 1;		// 1でデバッグモード
+
+// DB setting
+// $url = "192.168.22.3";
+$url = "localhost";
+
+// デフォルトはテストデータベース
+$user = "malmaga_system";
+$pass = "iGHrh0W4NJo_lW0a";
+$db = "malmaga_system";
+
+// 本番データベース
+if($is_test != 1){
+}
+
+?>

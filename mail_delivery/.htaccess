@@ -1,0 +1,5 @@
+AuthName "Please enter your ID and password"
+AuthType Basic
+AuthUserFile /var/www/mail_delivery/.htpasswd
+require valid-user
+
