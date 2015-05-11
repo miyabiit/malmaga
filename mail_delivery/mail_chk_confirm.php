@@ -113,8 +113,6 @@ function chkDialog() {
       <td>送信するメールアドレスの存在チェックは最大５分かかります。</td>
     </tr>
 -->
-
-
     <tr>
       <td align="center">------------------------------------------------------------------------------------------ <br>
 <?php
@@ -160,26 +158,21 @@ if ($offset > 0) {
 			$strRec = preg_split("/,/", $line);
 			$fmax = count($strRec);
 
-			$to_address = $strRec[0];     // メールアドレス
-			$com_name = $strRec[1];     // 会社名
-			$sec_name1= $strRec[2];     // 部署名１
-			$sec_name2= $strRec[3];     // 部署名２
-			$per_name = $strRec[4];     // ご担当者名
-
-// echo $to_address . "<br />";
-// $to_address = 'afukuzaki@mentor-ss.co.jp';
-// $mail_adr = 'admin@aktio-mail.jp';
-
+			$to_address = $strRec[0];   // メールアドレス
+			$com_name   = $strRec[1];   // 会社名
+			$sec_name1  = $strRec[2];   // 部署名１
+			$sec_name2  = $strRec[3];   // 部署名２
+			$per_name   = $strRec[4];   // ご担当者名
 
 			$sql  = "select * from t_sendinfo ";
 			$sql .= " where send_id = " . $user_id;
 			$sql .= "   and status = " . WAIT;
 			$sql .= "   and to_address = '" . $to_address . "'"; 
-//echo $sql . "<br />";
 
 			$result = pg_query($con, $sql);
+			//sql error -- $to_address string error example include ' or " , ?
 			if (!$result) {
-//				die("Error in SQL query : " . pg_last_error());
+				// die("Error in SQL query : " . pg_last_error());
 				pg_close($con);
 				fclose($fp);
 				unlink($csvfile);
@@ -188,25 +181,20 @@ if ($offset > 0) {
 			if (pg_numrows($result) > 0) {
 				if ($row = pg_fetch_array($result)) {
 					$chk_adr = $row['to_address'];
-
-//echo "chk_adr: " . $chk_adr. " " . "<br />";
-
 				}
-        	}
-
-//echo "chk_adr: " . $chk_adr. " " . "<br />";
-//echo "chk_adr: " . strlen($chk_adr). " " . "<br />";
+      }
+			//echo "chk_adr: " . $chk_adr. " " . "<br />";
 
 			if (strcmp($chk_adr, $to_address) != 0) {
-
 				usleep(CHECK_TIME);
+				// Mail Check 
 				// 連続定義を行なうと機嫌がいい
 				$chk->checkEmail($to_address);
 				$chk->checkEmail($to_address);
 				$chk->checkEmail($to_address);
 				if ($chk->checkEmail($to_address) ) {
-//echo $user_id . " " . $to_address . "<br>";
-// echo "ok mail addrss" . "<br />";
+					//echo $user_id . " " . $to_address . "<br>";
+					//echo "ok mail addrss" . "<br />";
 					$info_sql  = "insert into t_sendinfo (";
 					$info_sql .= " send_id";
 					$info_sql .= ",to_address";
@@ -230,7 +218,6 @@ if ($offset > 0) {
 					$info_sql .= ")";
 
 					$result = pg_query($con, $info_sql);
-
 					if (!$result) {
 						$ret = 4;
 						echo $info_sql . "<br />";
@@ -238,6 +225,7 @@ if ($offset > 0) {
 					}
 					pg_free_result($result);
 				}
+				// MailAddress Error
 				else {
 					if (!$errMsg) {
 						echo "<font color='red' size='3'>存在しないメールアドレスが含まれています。 </font><br />";
@@ -251,21 +239,20 @@ if ($offset > 0) {
 				$recCnt++;
 			}
 			else {
-//echo "check ok : " . $to_address . "<br />";
+				//echo "check ok : " . $to_address . "<br />";
 			}
-		}       // while end
+		} // while end
 		fclose($fp);
 		unlink($csvfile);
 	}
 }
 else {  // csv check
-        echo "<font color='red' size=3>ＣＳＶ以外のファイルが指定されました。 </font><br />";
-        $flg_send = false;
+	echo "<font color='red' size=3>ＣＳＶ以外のファイルが指定されました。 </font><br />";
+	$flg_send = false;
 }
 
-
-	// success
-	if ($flg_send) {
+// success
+if ($flg_send) {
 ?>
 <font size="3">送信先のメールアドレスが正常であることを確認しました。 </font>
 <br />
@@ -278,7 +265,6 @@ else {  // csv check
 	}
 	else {
 ?>
-
           ------------------------------------------------------------------------------------------ <br></td>
 </tr>
 <tr>
@@ -288,12 +274,9 @@ else {  // csv check
 <?php
 	}
 ?>
-
-
         </td>
       </tr>
     </table>
-
    <br>
 </form>
 </div><!-- ここまでがcontentのレイヤー枠です -->
