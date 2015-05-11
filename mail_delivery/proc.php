@@ -152,6 +152,16 @@ function close_win(){
 //echo $cmd ." <br>";
 
 	system($cmd);
+
+	$updir = './data';
+	$errfile = $updir."/"."error_addresses.csv";
+	$fp_err = @fopen($errfile, "r");
+	if ($fp_err) {
+		echo "<font color='red' size='3'>存在しないメールアドレスリスト</font><br />";
+		while ( $line = fgets($fp) ) {
+			echo $line . "<br/>";
+		}
+	}
 ?>
 
 </tbody>
