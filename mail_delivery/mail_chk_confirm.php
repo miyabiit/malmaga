@@ -134,6 +134,7 @@ function chkDialog() {
 // file check
 $offset = strpos($csvfile, ".csv");
 //echo $adr_file. " " . $offset . "byte<br>";
+$recCnt = 0;
 if ($offset > 0) {
 
 //echo $csvfile . "<br />";
@@ -142,7 +143,6 @@ if ($offset > 0) {
 	$fp_err = @fopen($errfile, "w");
 
 	$flg_send = true;
-	$recCnt = 0;
 	$errMsg = false;
 	if ($fp) {
 
@@ -184,11 +184,13 @@ if ($offset > 0) {
 				unlink($csvfile);
 				header('Location: login_err.html');
 			}
+			$chk_adr = '';
 			if (pg_numrows($result) > 0) {
+				$recCnt++;
 				if ($row = pg_fetch_array($result)) {
 					$chk_adr = $row['to_address'];
 				}
-      }
+      			}
 			//echo "chk_adr: " . $chk_adr. " " . "<br />";
 
 			if (strcmp($chk_adr, $to_address) != 0) {
@@ -199,8 +201,7 @@ if ($offset > 0) {
 				$chk->checkEmail($to_address);
 				$chk->checkEmail($to_address);
 				if ($chk->checkEmail($to_address) ) {
-					//echo $user_id . " " . $to_address . "<br>";
-					//echo "ok mail addrss" . "<br />";
+					//echo $user_id . " " . $to_address . "<b/r>";
 					$info_sql  = "insert into t_sendinfo (";
 					$info_sql .= " send_id";
 					$info_sql .= ",to_address";
@@ -234,6 +235,7 @@ if ($offset > 0) {
 				}
 				// MailAddress Error
 				else {
+					//echo "<font color='red' size='3'>$chk->response_code : $chk->response</font><br/>";
 					/*
 					if (!$errMsg) {
 						echo "<font color='red' size='3'>存在しないメールアドレスが含まれています。 </font><br />";
@@ -242,7 +244,7 @@ if ($offset > 0) {
 					}
 					echo $to_address ."　". $com_name ."　". $sec_name1 ."　". $sec_name2 ."　". $per_name . "<br/>";
 					*/
-					fwrite($fp_err, $line."\n");
+					fwrite($fp_err, $line.','.$chk->response_code."\n");
 					$flg_send = false;
 					//$errMsg = true;
 				}
@@ -272,15 +274,15 @@ if ($flg_send) {
 <input name="sousin" type="submit" value="入力画面へ" onclick="return chkDialog();">
 <input name="csvfile" type="hidden"value="<?php echo $csvfile; ?>" />
 <?php
-	}else if($recCnt > 0){
+	}elseif($recCnt > 0){
 ?>
-<font size="3">アップロードされた該当メールアドレスが実在するか、確認を行いました。</font>
-<br />
-          ------------------------------------------------------------------------------------------ <br></td>
-</tr>
+<font size="3">アップロードされた該当メールアドレスが実在するか、確認を行いました。</font><br/>
+<font size="3"><?php echo($recCnt); ?>件のメールアドレスの存在が確認されました。</font><br/>
 <font size="3">実在するメールアドレスのみ送信する場合には[入力画面へ]をクリックしてください。</font><br/>
 <font size="3">※ 実在しないメールアドレスの一覧画面は一括送信後に表示されます</font><br/>
 <br/>
+          ------------------------------------------------------------------------------------------ <br></td>
+</tr>
 <td Align="right">
 	<input name="sousin" type="submit" value="入力画面へ" onclick="return chkDialog();">
 	<input name="csvfile" type="hidden" value="<?php echo $csvfile; ?>" />
@@ -290,12 +292,11 @@ if ($flg_send) {
 	<input name="modoru" type="button" value="戻る" onclick="history.back();">
 </form>
 <?php
-	else {
+	}else {
 ?>
-<font size="3">アップロードされたメールアドレスは全て存在しません。</font>
+<font size="3">アップロードされたメールアドレスは全て存在しません。</font><br/>
 <font color='red' size='3'>添付ファイルをご確認の上、戻るボタンから </font><br/>
 <font color='red' size='3'>再度操作を行なってください。 </font><br/>
-<br />
           ------------------------------------------------------------------------------------------ <br></td>
 </tr>
 <tr>

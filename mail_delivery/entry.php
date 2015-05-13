@@ -161,7 +161,6 @@ function chkEntry() {
     <input type="hidden" name="user_id" value="<?php echo $user_id; ?>" />
     <input type="hidden" name="passwd" value="<?php echo $passwd; ?>" />
     <input type="hidden" name="csvfile" value="<?php echo $csvfile; ?>" />
-    <input type="hidden" name="errfile" value="<?php echo $errfile; ?>" />
 
 <h3>一斉メール発行画面</h3>
 <table width="600" align="center">
